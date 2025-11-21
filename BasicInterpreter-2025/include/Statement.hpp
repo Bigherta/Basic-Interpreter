@@ -23,3 +23,9 @@ class Statement {
 
 // TODO: Other statement types derived from Statement, e.g., GOTOStatement,
 // LetStatement, etc.
+class GOTOstatement: public Statement{
+  
+};
+class LetStatement: public Statement{
+
+};
