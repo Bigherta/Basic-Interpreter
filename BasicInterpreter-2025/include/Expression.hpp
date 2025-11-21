@@ -18,7 +18,7 @@ class ConstExpression : public Expression {
   int evaluate(const VarState& state) const override;
 
  private:
-  int value_;
+  int value_;//记录常量值
 };
 
 class VariableExpression : public Expression {
