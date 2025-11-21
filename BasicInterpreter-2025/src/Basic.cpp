@@ -9,20 +9,20 @@
 #include "../include/utils/Error.hpp"
 
 int main() {
-  Lexer lexer;
-  Parser parser;
-  Program program;
+    Lexer lexer;
+    Parser parser;
+    Program program;
 
-  std::string line;
-  while (std::getline(std::cin, line)) {
-    if (line.empty()) {
-      continue;
+    std::string line;
+    while (std::getline(std::cin, line)) {
+        if (line.empty()) {
+            continue;
+        }
+        try {
+            // TODO: The main function.
+        } catch (const BasicError &e) {
+            std::cout << e.message() << "\n";
+        }
     }
-    try {
-      // TODO: The main function.
-    } catch (const BasicError& e) {
-      std::cout << e.message() << "\n";
-    }
-  }
-  return 0;
+    return 0;
 }

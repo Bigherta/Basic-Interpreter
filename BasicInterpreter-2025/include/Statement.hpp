@@ -9,23 +9,19 @@ class Program;
 class VarState;
 
 class Statement {
- public:
-  explicit Statement(std::string source);
-  virtual ~Statement() = default;
+public:
+    explicit Statement(std::string source);
+    virtual ~Statement() = default;
 
-  virtual void execute(VarState& state, Program& program) const = 0;
+    virtual void execute(VarState &state, Program &program) const = 0;
 
-  const std::string& text() const noexcept;
+    const std::string &text() const noexcept;
 
- private:
-  std::string source_;
+private:
+    std::string source_;
 };
 
 // TODO: Other statement types derived from Statement, e.g., GOTOStatement,
 // LetStatement, etc.
-class GOTOstatement: public Statement{
-  
-};
-class LetStatement: public Statement{
-
-};
+class GOTOstatement : public Statement {};
+class LetStatement : public Statement {};
