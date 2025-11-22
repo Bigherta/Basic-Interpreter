@@ -2,9 +2,7 @@
 
 #include <memory>
 #include <string>
-
 #include "Expression.hpp"
-
 class Program;
 class VarState;
 
@@ -30,8 +28,10 @@ class GOTOstatement : public Statement
     int gotoPC;
     public:
     GOTOstatement(std::string, int);
-    void execute(VarState &, Program &);
+    void execute(VarState &state, Program &program);
 };
-class LetStatement : public Statement
+class PrintStatement : public Statement
 {
+    public:
+    void execute(VarState &state, Program &program);
 };

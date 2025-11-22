@@ -149,6 +149,7 @@ Statement *Parser::parseGoto(TokenStream &tokens, const std::string &originLine)
 
     int targetLine = parseLiteral(lineToken);
     // TODO: create a corresponding stmt and return it.
+    GOTOstatement *temp = new GOTOstatement(originLine, targetLine);
 }
 
 Statement *Parser::parseIf(TokenStream &tokens, const std::string &originLine) const

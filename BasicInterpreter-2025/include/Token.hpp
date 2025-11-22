@@ -40,9 +40,9 @@ enum class TokenType
 
 struct Token
 {
-    TokenType type{TokenType::UNKNOWN};
-    std::string text{};
-    int column{0};
+    TokenType type{TokenType::UNKNOWN}; //封装类型
+    std::string text{}; //封装原始文本（分为关键字、基本语法单元、运算与符号）
+    int column{0};//追踪当前列
 };
 
 class TokenStream

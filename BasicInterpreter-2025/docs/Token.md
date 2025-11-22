@@ -5,7 +5,7 @@
 Token 系列定义词法分析阶段的统一数据结构，供 `Lexer` 生成、`Parser` 与 `Program` 消费。主要组成：
 
 - `TokenType`：枚举所有词法类型；
-- `Token`：封装类型与原始文本；
+- `Token`：封装**类型**与**原始文本**；
 - `TokenStream`：顺序访问 token 的轻量容器。
 
 ### TokenType

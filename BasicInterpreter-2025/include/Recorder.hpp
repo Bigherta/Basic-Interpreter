@@ -32,6 +32,7 @@ public:
     // 返回大于 line 的最小行号，不存在则返回 -1。
     int nextLine(int line) const noexcept;
 
+    
 private:
     // TODO.
     std::map<int,Statement*> record;
