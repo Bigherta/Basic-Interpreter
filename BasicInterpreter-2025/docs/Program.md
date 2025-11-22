@@ -33,7 +33,7 @@ public:
 	// 按行号升序执行程序，支持 GOTO/IF 改变 PC。
 	void run(); 
 
-	// 输出 `<line> <stmt>`。
+	// 输出 <line> <stmt>。
 	void list() const; 
 
 	// 清空 Recorder 与 VarState

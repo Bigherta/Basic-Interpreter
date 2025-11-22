@@ -108,7 +108,6 @@ Statement *Parser::parseLet(TokenStream &tokens, const std::string &originLine) 
     } // 若为空或不为赋值符号，异常抛出
 
     auto expr = parseExpression(tokens);
-
     // TODO: create a corresponding stmt and return it.
 }
 
@@ -243,16 +242,16 @@ Expression *Parser::parseExpression(TokenStream &tokens, int precedence) const
     {
         int value = parseLiteral(token);
         left = new ConstExpression(value);
-    }
+    }//将左操作数赋值为常量
     else if (token->type == TokenType::IDENTIFIER)
     {
         left = new VariableExpression(token->text);
-    }
+    }//将左操作数作为变量表达式并命名为token->text
     else if (token->type == TokenType::LEFT_PAREN)
     {
-        ++leftParentCount;
+        ++leftParentCount;//左括号数加一
         left = parseExpression(tokens, 0);
-
+        //递归解析剩下的表达式
         if (tokens.empty() || tokens.get()->type != TokenType::RIGHT_PAREN)
         {
             throw BasicError("MISMATCHED PARENTHESIS");

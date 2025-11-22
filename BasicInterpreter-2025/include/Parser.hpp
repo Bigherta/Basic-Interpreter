@@ -43,8 +43,8 @@ private:
     Expression *parseExpression(TokenStream &tokens) const;
     Expression *parseExpression(TokenStream &tokens, int precedence) const;
 
-    int getPrecedence(TokenType op) const;
+    int getPrecedence(TokenType op) const; //返回运算符优先级
     int parseLiteral(const Token *token) const;
 
-    mutable int leftParentCount{0};
+    mutable int leftParentCount{0};//括号层数
 };

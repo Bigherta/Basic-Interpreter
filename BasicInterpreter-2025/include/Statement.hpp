@@ -16,16 +16,21 @@ public:
 
     virtual void execute(VarState &state, Program &program) const = 0;
 
-    const std::string &text() const noexcept;
+    const std::string &text() const noexcept; //返回该行语句
 
 private:
-    std::string source_;
+    std::string source_;//储存一行语句
 };
 
 // TODO: Other statement types derived from Statement, e.g., GOTOStatement,
 // LetStatement, etc.
 class GOTOstatement : public Statement
 {
+    private:
+    int gotoPC;
+    public:
+    GOTOstatement(std::string, int);
+    void execute(VarState &, Program &);
 };
 class LetStatement : public Statement
 {
