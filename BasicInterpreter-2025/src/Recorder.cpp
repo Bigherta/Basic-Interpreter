@@ -2,6 +2,14 @@
 #include "../include/Recorder.hpp"
 #include <iostream>
 #include <utility>
+
+Recorder::~Recorder()
+{
+    for (auto i = record.begin(); i != record.end(); i++)
+    {
+        delete i->second;
+    }
+}
 void Recorder::add(int line, Statement *stmt)
 {
     if (record.count(line))
@@ -10,7 +18,7 @@ void Recorder::add(int line, Statement *stmt)
     }
     else
     {
-        record.insert(std::make_pair(line, stmt));
+        record.emplace(line, stmt);
     }
     max_PC = std::max(max_PC, line);
 }

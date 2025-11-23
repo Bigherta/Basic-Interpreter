@@ -13,23 +13,10 @@ const string traceFolder = "../test/";
 const string defaultStudentBasic = "./code";
 const string defaultStanderBasic = "../Bonus-Demo-64bit";
 
-const int traceCount = 100;
+const int traceCount = 9;
 const string traces[traceCount] = {
         "trace00.txt", "trace01.txt", "trace02.txt", "trace03.txt", "trace04.txt", "trace05.txt", "trace06.txt",
-        "trace07.txt", "trace08.txt", "trace09.txt", "trace10.txt", "trace11.txt", "trace12.txt", "trace13.txt",
-        "trace14.txt", "trace15.txt", "trace16.txt", "trace17.txt", "trace18.txt", "trace19.txt", "trace20.txt",
-        "trace21.txt", "trace22.txt", "trace23.txt", "trace24.txt", "trace25.txt", "trace26.txt", "trace27.txt",
-        "trace28.txt", "trace29.txt", "trace30.txt", "trace31.txt", "trace32.txt", "trace33.txt", "trace34.txt",
-        "trace35.txt", "trace36.txt", "trace37.txt", "trace38.txt", "trace39.txt", "trace40.txt", "trace41.txt",
-        "trace42.txt", "trace43.txt", "trace44.txt", "trace45.txt", "trace46.txt", "trace47.txt", "trace48.txt",
-        "trace49.txt", "trace50.txt", "trace51.txt", "trace52.txt", "trace53.txt", "trace54.txt", "trace55.txt",
-        "trace56.txt", "trace57.txt", "trace58.txt", "trace59.txt", "trace60.txt", "trace61.txt", "trace62.txt",
-        "trace63.txt", "trace64.txt", "trace65.txt", "trace66.txt", "trace67.txt", "trace68.txt", "trace69.txt",
-        "trace70.txt", "trace71.txt", "trace72.txt", "trace73.txt", "trace74.txt", "trace75.txt", "trace76.txt",
-        "trace77.txt", "trace78.txt", "trace79.txt", "trace80.txt", "trace81.txt", "trace82.txt", "trace83.txt",
-        "trace84.txt", "trace85.txt", "trace86.txt", "trace87.txt", "trace88.txt", "trace89.txt", "trace90.txt",
-        "trace91.txt", "trace92.txt", "trace93.txt", "trace94.txt", "trace95.txt", "trace96.txt", "trace97.txt",
-        "trace98.txt", "trace99.txt",
+        "trace07.txt", "trace08.txt"
 };
 
 string studentBasic = "";

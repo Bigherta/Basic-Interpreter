@@ -24,40 +24,46 @@ int main()
         try
         {
             TokenStream tokens_of_line = lexer.tokenize(line);
-            ParsedLine Aline = parser.parseLine(tokens_of_line, line);
-            if (Aline.getLine().has_value())
-                program.addStmt(Aline.getLine().value(), Aline.getStatement());
-            else
+            const TokenType first_token = tokens_of_line.peek()->type;
+            switch (first_token)
             {
-                const TokenType first_token = tokens_of_line.peek()->type;
-                switch (first_token)
-                {
-                    case TokenType::LIST:
+                case TokenType::LIST:
 
-                        program.list();
-                        break;
+                    program.list();
+                    break;
 
-                    case TokenType::QUIT:
+                case TokenType::QUIT:
 
-                        exit(0);
-                        break;
+                    exit(0);
+                    break;
 
-                    case TokenType::CLEAR:
+                case TokenType::CLEAR:
 
-                        program.clear();
-                        break;
-                    case TokenType::RUN:
+                    program.clear();
+                    break;
+                case TokenType::RUN:
 
-                        program.run();
-                        break;
+                    program.run();
+                    break;
 
-                    case TokenType::HELP:
-                        std::cout << "A basic Interpreter\n";
-                        break;
-                    default:
+                case TokenType::HELP:
+                    std::cout << "A basic Interpreter\n";
+                    break;
+
+                default:
+                    ParsedLine Aline = parser.parseLine(tokens_of_line, line);
+                    if (Aline.getLine().has_value())
+                    {
+                        Statement *stmt = Aline.fetchStatement();
+                        program.addStmt(Aline.getLine().value(), stmt);
+                        delete stmt;
+                    }
+                    else
+                    {
                         Aline.getStatement()->execute(program.get_vars(), program);
                         delete Aline.fetchStatement();
-                }
+                    }
+                    break;
             }
         }
         catch (const BasicError &e)

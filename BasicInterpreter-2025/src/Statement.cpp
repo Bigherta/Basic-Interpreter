@@ -43,7 +43,7 @@ void InputStatement::execute(VarState &state, Program &program) const
 
 RemStatement::RemStatement(std::string source) : Statement(source) { return; }
 
-void RemStatement::execute(VarState &state, Program &program) const { program.removeStmt(program.getPC()); }
+void RemStatement::execute(VarState &state, Program &program) const { return; }
 
 EndStatement::EndStatement(std::string source) : Statement(source) { return; }
 

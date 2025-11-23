@@ -1,6 +1,8 @@
 // TODO: Imply interfaces declared in the Program.hpp.
 #include "../include/Program.hpp"
 
+Program::Program() :vars_(), recorder_(), programCounter_(1), programEnd_(false) { return; }
+
 void Program::addStmt(int line, Statement *stmt) { recorder_.add(line, stmt); }
 
 void Program::removeStmt(int line) { recorder_.remove(line); }
