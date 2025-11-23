@@ -23,7 +23,42 @@ int main()
         }
         try
         {
-            // TODO: The main function.
+            TokenStream tokens_of_line = lexer.tokenize(line);
+            ParsedLine Aline = parser.parseLine(tokens_of_line, line);
+            if (Aline.getLine().has_value())
+                program.addStmt(Aline.getLine().value(), Aline.getStatement());
+            else
+            {
+                const TokenType first_token = tokens_of_line.peek()->type;
+                switch (first_token)
+                {
+                    case TokenType::LIST:
+
+                        program.list();
+                        break;
+
+                    case TokenType::QUIT:
+
+                        exit(0);
+                        break;
+
+                    case TokenType::CLEAR:
+
+                        program.clear();
+                        break;
+                    case TokenType::RUN:
+
+                        program.run();
+                        break;
+
+                    case TokenType::HELP:
+                        std::cout << "A basic Interpreter\n";
+                        break;
+                    default:
+                        Aline.getStatement()->execute(program.get_vars(), program);
+                        delete Aline.fetchStatement();
+                }
+            }
         }
         catch (const BasicError &e)
         {

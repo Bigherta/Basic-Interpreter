@@ -25,9 +25,8 @@ LetStatement::LetStatement(std::string source, Expression *expression) : Stateme
 
 void LetStatement::execute(VarState &state, Program &program) const
 {
-    Lexer *temp = new Lexer();
-    TokenStream tokens = temp->tokenize(source_);
-    delete temp;
+    Lexer temp;
+    TokenStream tokens = temp.tokenize(source_);
     tokens.get();
     state.setValue((tokens.get())->text, exp->evaluate(state));
 }

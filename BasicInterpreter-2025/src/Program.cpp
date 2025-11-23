@@ -13,7 +13,9 @@ void Program::run()
         index = recorder_.nextLine(index);
         const Statement *executable = recorder_.get(index);
         executable->execute(vars_, *this);
+        delete executable;
     }
+    resetAfterRun();
 }
 
 void Program::list() const { recorder_.printLines(); }
@@ -32,7 +34,6 @@ void Program::changePC(int line) { programCounter_ = line; }
 
 void Program::programEnd() { programEnd_ = true; }
 
-void Program::resetAfterRun() noexcept
-{
-    // to do
-}
+VarState &Program::get_vars() { return vars_; }
+
+void Program::resetAfterRun() noexcept { clear(); }

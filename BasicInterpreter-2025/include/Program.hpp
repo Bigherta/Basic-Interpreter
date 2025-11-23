@@ -39,6 +39,9 @@ public:
     // 程序结束
     void programEnd();
 
+    // 获取当前所有变量状态
+    VarState &get_vars();
+
 private:
     Recorder recorder_;
     VarState vars_;
