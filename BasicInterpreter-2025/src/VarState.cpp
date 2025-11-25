@@ -1,7 +1,5 @@
 #include "../include/VarState.hpp"
 
-#include <algorithm>
-
 #include "../include/utils/Error.hpp"
 
 void VarState::setValue(const std::string &name, int value) { values_[name] = value; }
@@ -17,3 +15,5 @@ int VarState::getValue(const std::string &name) const
 }
 
 void VarState::clear() { values_.clear(); }
+
+std::unordered_map<std::string, int> VarState::get_map() const { return values_; }

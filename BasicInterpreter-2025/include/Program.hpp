@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 #include "Recorder.hpp"
 #include "VarState.hpp"
@@ -40,13 +41,19 @@ public:
     void programEnd();
 
     // 获取当前所有变量状态
-    VarState &get_vars();
+    std::vector<VarState> &get_vars();
 
     //程序是否有行line
     bool hasline(int line);
+
+    //新增作用域
+    void indent();
+
+    //退出作用域
+    void dedent();
 private:
     Recorder recorder_;
-    VarState vars_;
+    std::vector<VarState> vars_;
     // 当前行号；RUN 前设为最小行
     int programCounter_;
     bool programEnd_;

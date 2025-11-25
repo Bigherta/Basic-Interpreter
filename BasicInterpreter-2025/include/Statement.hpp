@@ -12,7 +12,7 @@ public:
     explicit Statement(std::string source);
     virtual ~Statement() = default;
 
-    virtual void execute(VarState &state, Program &program) const = 0;
+    virtual void execute(std::vector<VarState> &state, Program &program) const = 0;
 
     const std::string &text() const noexcept; // 返回该行语句
 
@@ -27,7 +27,7 @@ private:
 
 public:
     GOTOstatement(std::string source, int targetline);
-    void execute(VarState &state, Program &program) const override;
+    void execute(std::vector<VarState> &state, Program &program) const override;
 };
 class PrintStatement : public Statement
 {
@@ -37,7 +37,7 @@ private:
 public:
     PrintStatement(std::string source, Expression *expression);
     ~PrintStatement() { delete exp; }
-    void execute(VarState &state, Program &program) const override;
+    void execute(std::vector<VarState> &state, Program &program) const override;
 };
 
 class LetStatement : public Statement
@@ -48,7 +48,7 @@ private:
 public:
     LetStatement(std::string source, Expression *expression);
     ~LetStatement() { delete exp; }
-    void execute(VarState &state, Program &program) const override;
+    void execute(std::vector<VarState> &state, Program &program) const override;
 };
 
 class InputStatement : public Statement
@@ -58,21 +58,21 @@ private:
 
 public:
     InputStatement(std::string source, std::string name);
-    void execute(VarState &state, Program &program) const override;
+    void execute(std::vector<VarState> &state, Program &program) const override;
 };
 
 class RemStatement : public Statement
 {
 public:
     RemStatement(std::string source);
-    void execute(VarState &state, Program &program) const override;
+    void execute(std::vector<VarState> &state, Program &program) const override;
 };
 
 class EndStatement : public Statement
 {
 public:
     EndStatement(std::string source);
-    void execute(VarState &state, Program &program) const override;
+    void execute(std::vector<VarState> &state, Program &program) const override;
 };
 
 class IfStatement : public GOTOstatement
@@ -88,5 +88,19 @@ public:
         delete left;
         delete right;
     }
-    void execute(VarState &state, Program &program) const override;
+    void execute(std::vector<VarState> &state, Program &program) const override;
+};
+
+class IndentStatement : public Statement
+{
+    public:
+    IndentStatement(std::string source);
+    void execute(std::vector<VarState> &state, Program &program) const override;
+};
+
+class DedentStatement : public Statement
+{
+    public:
+    DedentStatement(std::string source);
+    void execute(std::vector<VarState> &state, Program &program) const override;
 };

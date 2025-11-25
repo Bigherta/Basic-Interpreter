@@ -35,7 +35,10 @@ enum class TokenType
     RIGHT_PAREN, // 右括号
     COMMA, // 逗号
            // 保留占位
-    UNKNOWN
+    UNKNOWN,
+
+    INDENT,//新增作用域
+    DEDENT //退出作用域
 }; // 枚举指令类型
 
 struct Token

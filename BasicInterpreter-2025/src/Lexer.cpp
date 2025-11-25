@@ -11,7 +11,7 @@ const std::unordered_map<std::string, TokenType> TABLE = {
         {"LET", TokenType::LET},  {"PRINT", TokenType::PRINT}, {"INPUT", TokenType::INPUT}, {"END", TokenType::END},
         {"REM", TokenType::REM},  {"GOTO", TokenType::GOTO},   {"IF", TokenType::IF},       {"THEN", TokenType::THEN},
         {"RUN", TokenType::RUN},  {"LIST", TokenType::LIST},   {"CLEAR", TokenType::CLEAR}, {"QUIT", TokenType::QUIT},
-        {"HELP", TokenType::HELP}}; // 构建从字符串到枚举类的一个映射
+        {"HELP", TokenType::HELP}, {"INDENT", TokenType::INDENT}, {"DEDENT", TokenType::DEDENT}}; // 构建从字符串到枚举类的一个映射
 
 bool isOverflow(const std::string &digits, bool negative)
 {
