@@ -1,10 +1,9 @@
 // TODO: Imply interfaces declared in the Program.hpp.
 #include "../include/Program.hpp"
 #include <vector>
-#include "../include/utils/Error.hpp"
 Program::Program() : recorder_(), programCounter_(1), programEnd_(false) { vars_.push_back(VarState()); }
 
-void Program::addStmt(int line, Statement *stmt) { recorder_.add(line, stmt); }
+void Program::addStmt(int line, std::shared_ptr<Statement> stmt) { recorder_.add(line, stmt); }
 
 void Program::removeStmt(int line) { recorder_.remove(line); }
 
@@ -15,7 +14,7 @@ void Program::run()
     while (programCounter_ != -1)
     {
         int pre_programcounter = programCounter_;
-        const Statement *executable = recorder_.get(programCounter_);
+        const std::shared_ptr<Statement> executable = recorder_.get(programCounter_);
         executable->execute(vars_, *this);
         if (programEnd_)
             break;

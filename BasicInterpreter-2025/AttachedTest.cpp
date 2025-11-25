@@ -1,11 +1,7 @@
 #include <unistd.h>
-
-#include <chrono>
 #include <cstdlib>
-#include <fstream>
 #include <iostream>
 #include <string>
-#include <vector>
 
 using namespace std;
 
@@ -15,26 +11,21 @@ const string defaultStanderBasic = "../Bonus-Demo-64bit";
 
 const int traceCount = 100;
 const string traces[traceCount] = {
-    "trace00.txt", "trace01.txt", "trace02.txt", "trace03.txt", "trace04.txt",
-    "trace05.txt", "trace06.txt", "trace07.txt", "trace08.txt", "trace09.txt",
-    "trace10.txt", "trace11.txt", "trace12.txt", "trace13.txt", "trace14.txt",
-    "trace15.txt", "trace16.txt", "trace17.txt", "trace18.txt", "trace19.txt",
-    "trace20.txt", "trace21.txt", "trace22.txt", "trace23.txt", "trace24.txt",
-    "trace25.txt", "trace26.txt", "trace27.txt", "trace28.txt", "trace29.txt",
-    "trace30.txt", "trace31.txt", "trace32.txt", "trace33.txt", "trace34.txt",
-    "trace35.txt", "trace36.txt", "trace37.txt", "trace38.txt", "trace39.txt",
-    "trace40.txt", "trace41.txt", "trace42.txt", "trace43.txt", "trace44.txt",
-    "trace45.txt", "trace46.txt", "trace47.txt", "trace48.txt", "trace49.txt",
-    "trace50.txt", "trace51.txt", "trace52.txt", "trace53.txt", "trace54.txt",
-    "trace55.txt", "trace56.txt", "trace57.txt", "trace58.txt", "trace59.txt",
-    "trace60.txt", "trace61.txt", "trace62.txt", "trace63.txt", "trace64.txt",
-    "trace65.txt", "trace66.txt", "trace67.txt", "trace68.txt", "trace69.txt",
-    "trace70.txt", "trace71.txt", "trace72.txt", "trace73.txt", "trace74.txt",
-    "trace75.txt", "trace76.txt", "trace77.txt", "trace78.txt", "trace79.txt",
-    "trace80.txt", "trace81.txt", "trace82.txt", "trace83.txt", "trace84.txt",
-    "trace85.txt", "trace86.txt", "trace87.txt", "trace88.txt", "trace89.txt",
-    "trace90.txt", "trace91.txt", "trace92.txt", "trace93.txt", "trace94.txt",
-    "trace95.txt", "trace96.txt", "trace97.txt", "trace98.txt", "trace99.txt",
+        "trace00.txt", "trace01.txt", "trace02.txt", "trace03.txt", "trace04.txt", "trace05.txt", "trace06.txt",
+        "trace07.txt", "trace08.txt", "trace09.txt", "trace10.txt", "trace11.txt", "trace12.txt", "trace13.txt",
+        "trace14.txt", "trace15.txt", "trace16.txt", "trace17.txt", "trace18.txt", "trace19.txt", "trace20.txt",
+        "trace21.txt", "trace22.txt", "trace23.txt", "trace24.txt", "trace25.txt", "trace26.txt", "trace27.txt",
+        "trace28.txt", "trace29.txt", "trace30.txt", "trace31.txt", "trace32.txt", "trace33.txt", "trace34.txt",
+        "trace35.txt", "trace36.txt", "trace37.txt", "trace38.txt", "trace39.txt", "trace40.txt", "trace41.txt",
+        "trace42.txt", "trace43.txt", "trace44.txt", "trace45.txt", "trace46.txt", "trace47.txt", "trace48.txt",
+        "trace49.txt", "trace50.txt", "trace51.txt", "trace52.txt", "trace53.txt", "trace54.txt", "trace55.txt",
+        "trace56.txt", "trace57.txt", "trace58.txt", "trace59.txt", "trace60.txt", "trace61.txt", "trace62.txt",
+        "trace63.txt", "trace64.txt", "trace65.txt", "trace66.txt", "trace67.txt", "trace68.txt", "trace69.txt",
+        "trace70.txt", "trace71.txt", "trace72.txt", "trace73.txt", "trace74.txt", "trace75.txt", "trace76.txt",
+        "trace77.txt", "trace78.txt", "trace79.txt", "trace80.txt", "trace81.txt", "trace82.txt", "trace83.txt",
+        "trace84.txt", "trace85.txt", "trace86.txt", "trace87.txt", "trace88.txt", "trace89.txt", "trace90.txt",
+        "trace91.txt", "trace92.txt", "trace93.txt", "trace94.txt", "trace95.txt", "trace96.txt", "trace97.txt",
+        "trace98.txt", "trace99.txt",
 };
 
 string studentBasic = "";
@@ -45,7 +36,8 @@ bool silent = false, firstFail = false, hideError = false, useColor = true;
 
 int correct = 0, wrong = 0, total = 0;
 
-void usage(const char *progname) {
+void usage(const char *progname)
+{
     cout << progname
          << " [-h] [-e <your_exec>] [-s <stander_exec>] [-t <trace_file>] [-f] "
             "[-m] [-q]"
@@ -60,17 +52,21 @@ void usage(const char *progname) {
     exit(1);
 }
 
-string color(string ce) {
+string color(string ce)
+{
     if (useColor)
         return ce;
     return "";
 }
 
-void parseArguments(int argc, char **argv) {
+void parseArguments(int argc, char **argv)
+{
     int c;
     opterr = 0;
-    while ((c = getopt(argc, argv, "e:s:t:fmqch")) != -1) {
-        switch (c) {
+    while ((c = getopt(argc, argv, "e:s:t:fmqch")) != -1)
+    {
+        switch (c)
+        {
             case 'e':
                 if (studentBasic.size())
                     usage(argv[0]);
@@ -119,12 +115,14 @@ void parseArguments(int argc, char **argv) {
         standerBasic = defaultStanderBasic;
 }
 
-void clearTempFiles() {
+void clearTempFiles()
+{
     int r = system("rm test_ans test_out -f");
     (void) r;
 }
 
-int testTrace(const char *trace) {
+int testTrace(const char *trace)
+{
     clearTempFiles();
     if (system((string() + "cat " + trace + " | timeout 1 " + standerBasic + " > test_ans 2> /dev/null").c_str()) != 0)
         return 1;
@@ -140,21 +138,27 @@ int testTrace(const char *trace) {
     return 0;
 }
 
-void runTest(const string currentTrace) {
+void runTest(const string currentTrace)
+{
     if (!silent)
         cout << "Trace \"" << currentTrace << "\" ... ";
     cout.flush();
     int error = testTrace(currentTrace.c_str());
     total++;
-    if (!error) {
+    if (!error)
+    {
         if (!silent)
             cout << color("\x1b[32;1m") << "Pass" << color("\x1b[0m") << endl;
         correct++;
-    } else {
+    }
+    else
+    {
         wrong++;
-        if (!silent) {
+        if (!silent)
+        {
             cout << color("\x1b[31;1m") << "Fail" << color("\x1b[0m") << endl;
-            if (!hideError) {
+            if (!hideError)
+            {
                 cout << "Trace file: " << endl << color("\x1b[35m");
                 cout.flush();
                 int r0 = system((string() + "cat " + currentTrace).c_str());
@@ -168,7 +172,8 @@ void runTest(const string currentTrace) {
                          << endl;
                 if (error == 3)
                     cout << color("\x1b[31m") << "Memory leak" << color("\x1b[0m") << endl;
-                if (error == 4) {
+                if (error == 4)
+                {
                     cout << "Demo output: " << endl << color("\x1b[36m");
                     cout.flush();
                     int r1 = system("cat test_ans");
@@ -188,7 +193,8 @@ void runTest(const string currentTrace) {
     }
 }
 
-void showScore() {
+void showScore()
+{
     int score = correct / 5 * 5;
     if (!silent)
         cout << correct << " / " << total << " trace(s) passed." << endl;
@@ -198,26 +204,30 @@ void showScore() {
 }
 
 // 附着式测试程序的主函数
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
     cout << "=== 附着式 BASIC 解释器测试程序 ===" << endl;
     cout << "本程序将利用 score.cpp 的功能进行测试" << endl;
     cout << "=====================================" << endl;
 
     parseArguments(argc, argv);
 
-    try {
+    try
+    {
         cout << "开始测试..." << endl;
         cout << "学生程序: " << studentBasic << endl;
         cout << "标准程序: " << standerBasic << endl;
         cout << "-------------------------------------" << endl;
 
         // 检查可执行文件是否存在
-        if (system(("test -f " + studentBasic).c_str()) != 0) {
+        if (system(("test -f " + studentBasic).c_str()) != 0)
+        {
             cout << color("\x1b[31m") << "错误: 学生程序 " << studentBasic << " 不存在!" << color("\x1b[0m") << endl;
             return 1;
         }
 
-        if (system(("test -f " + standerBasic).c_str()) != 0) {
+        if (system(("test -f " + standerBasic).c_str()) != 0)
+        {
             cout << color("\x1b[31m") << "错误: 标准程序 " << standerBasic << " 不存在!" << color("\x1b[0m") << endl;
             return 1;
         }
@@ -226,16 +236,22 @@ int main(int argc, char **argv) {
         system(("chmod +x " + studentBasic).c_str());
         system(("chmod +x " + standerBasic).c_str());
 
-        if (traceFile.size()) {
+        if (traceFile.size())
+        {
             cout << "运行单个测试: " << traceFile << endl;
             runTest(traceFile);
-        } else {
+        }
+        else
+        {
             cout << "运行所有测试用例..." << endl;
-            for (int i = 0; i < traceCount; i++) {
+            for (int i = 0; i < traceCount; i++)
+            {
                 runTest(traceFolder + traces[i]);
             }
         }
-    } catch (...) {
+    }
+    catch (...)
+    {
         cout << color("\x1b[31m") << "测试被中断" << color("\x1b[0m") << endl;
     }
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -37,8 +38,8 @@ enum class TokenType
            // 保留占位
     UNKNOWN,
 
-    INDENT,//新增作用域
-    DEDENT //退出作用域
+    INDENT, // 新增作用域
+    DEDENT // 退出作用域
 }; // 枚举指令类型
 
 struct Token
@@ -54,8 +55,8 @@ public:
     TokenStream() = default; // 默认构造
     explicit TokenStream(std::vector<Token> &&tokens);
 
-    const Token *peek() const;
-    const Token *get();
+    const std::shared_ptr<Token> peek() const;
+    const std::shared_ptr<Token> get();
     bool empty() const;
     void reset();
 

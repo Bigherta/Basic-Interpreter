@@ -2,23 +2,19 @@
 
 #include <map>
 #include <memory>
-#include <utility>
-#include <vector>
 #include "Statement.hpp"
 
 class Recorder
 {
 public:
-    ~Recorder();
-
     // 插入或覆盖指定行。
-    void add(int line, Statement *stmt);
+    void add(int line, std::shared_ptr<Statement> stmt);
 
     // 删除行，不存在则无事发生。
     void remove(int line);
 
     // 读取行号对应 Stmt ，不存在则返回 nullptr。
-    const Statement *get(int line) const noexcept;
+    const std::shared_ptr<Statement> get(int line) const noexcept;
 
     // 询问行号对应 Stmt 是否存在。
     bool hasLine(int line) const noexcept;
@@ -35,6 +31,6 @@ public:
 
 private:
     // TODO.
-    std::map<int, Statement *> record;
+    std::map<int, std::shared_ptr<Statement>> record;
     int max_PC;
 };

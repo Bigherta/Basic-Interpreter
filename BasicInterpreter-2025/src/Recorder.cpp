@@ -3,25 +3,17 @@
 #include <iostream>
 #include <utility>
 
-Recorder::~Recorder()
-{
-    for (auto i = record.begin(); i != record.end(); i++)
-    {
-        delete i->second;
-    }
-}
-void Recorder::add(int line, Statement *stmt)
+void Recorder::add(int line, std::shared_ptr<Statement> stmt)
 {
     if (record.count(line))
     {
-        delete record[line];
         record[line] = stmt;
     }
     else
     {
         record.emplace(line, stmt);
     }
-    
+
     max_PC = std::max(max_PC, line);
 }
 
@@ -42,7 +34,7 @@ void Recorder::remove(int line)
     }
 }
 
-const Statement *Recorder::get(int line) const noexcept
+const std::shared_ptr<Statement> Recorder::get(int line) const noexcept
 {
     if (record.count(line))
     {
@@ -68,11 +60,6 @@ bool Recorder::hasLine(int line) const noexcept
 
 void Recorder::clear() noexcept
 {
-    for (auto i = record.begin(); i != record.end(); i++)
-    {
-        delete i->second;
-        i->second = nullptr;
-    }
     record.clear();
     max_PC = 0;
 }

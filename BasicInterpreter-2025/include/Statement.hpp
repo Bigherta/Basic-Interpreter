@@ -10,7 +10,6 @@ class Statement
 {
 public:
     explicit Statement(std::string source);
-    virtual ~Statement() = default;
 
     virtual void execute(std::vector<VarState> &state, Program &program) const = 0;
 
@@ -32,22 +31,22 @@ public:
 class PrintStatement : public Statement
 {
 private:
-    Expression *exp;
+    std::shared_ptr<Expression> exp;
 
 public:
-    PrintStatement(std::string source, Expression *expression);
-    ~PrintStatement() { delete exp; }
+    PrintStatement(std::string source, std::shared_ptr<Expression> expression);
+
     void execute(std::vector<VarState> &state, Program &program) const override;
 };
 
 class LetStatement : public Statement
 {
 private:
-    Expression *exp;
+    std::shared_ptr<Expression> exp;
 
 public:
-    LetStatement(std::string source, Expression *expression);
-    ~LetStatement() { delete exp; }
+    LetStatement(std::string source, std::shared_ptr<Expression> expression);
+
     void execute(std::vector<VarState> &state, Program &program) const override;
 };
 
@@ -78,29 +77,25 @@ public:
 class IfStatement : public GOTOstatement
 {
 private:
-    Expression *left, *right;
+    std::shared_ptr<Expression> left, right;
     char op;
 
 public:
-    IfStatement(std::string source, int target, Expression *l, Expression *r, char o);
-    ~IfStatement()
-    {
-        delete left;
-        delete right;
-    }
+    IfStatement(std::string source, int target, std::shared_ptr<Expression> l, std::shared_ptr<Expression> r, char o);
+
     void execute(std::vector<VarState> &state, Program &program) const override;
 };
 
 class IndentStatement : public Statement
 {
-    public:
+public:
     IndentStatement(std::string source);
     void execute(std::vector<VarState> &state, Program &program) const override;
 };
 
 class DedentStatement : public Statement
 {
-    public:
+public:
     DedentStatement(std::string source);
     void execute(std::vector<VarState> &state, Program &program) const override;
 };

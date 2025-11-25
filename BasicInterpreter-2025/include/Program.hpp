@@ -14,7 +14,7 @@ public:
     Program();
 
     // 添加一行程序。
-    void addStmt(int line, Statement *stmt);
+    void addStmt(int line, std::shared_ptr<Statement> stmt);
 
     // 删除行号对应的语句。
     void removeStmt(int line);
@@ -43,14 +43,15 @@ public:
     // 获取当前所有变量状态
     std::vector<VarState> &get_vars();
 
-    //程序是否有行line
+    // 程序是否有行line
     bool hasline(int line);
 
-    //新增作用域
+    // 新增作用域
     void indent();
 
-    //退出作用域
+    // 退出作用域
     void dedent();
+
 private:
     Recorder recorder_;
     std::vector<VarState> vars_;

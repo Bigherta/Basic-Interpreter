@@ -12,17 +12,15 @@ class ParsedLine
 {
 private:
     std::optional<int> line_number_;
-    Statement *statement_;
+    std::shared_ptr<Statement> statement_;
 
 public:
     ParsedLine();
-    ~ParsedLine();
-
     void setLine(int line);
     std::optional<int> getLine();
-    void setStatement(Statement *stmt);
-    Statement *getStatement() const;
-    Statement *fetchStatement();
+    void setStatement(std::shared_ptr<Statement> stmt);
+    std::shared_ptr<Statement> getStatement() const;
+    std::shared_ptr<Statement> fetchStatement();
 };
 
 class Parser
@@ -31,22 +29,22 @@ public:
     ParsedLine parseLine(TokenStream &tokens, const std::string &originLine) const;
 
 private:
-    Statement *parseStatement(TokenStream &tokens, const std::string &originLine) const;
-    Statement *parseLet(TokenStream &tokens, const std::string &originLine) const;
-    Statement *parsePrint(TokenStream &tokens, const std::string &originLine) const;
-    Statement *parseInput(TokenStream &tokens, const std::string &originLine) const;
-    Statement *parseGoto(TokenStream &tokens, const std::string &originLine) const;
-    Statement *parseIf(TokenStream &tokens, const std::string &originLine) const;
-    Statement *parseRem(TokenStream &tokens, const std::string &originLine) const;
-    Statement *parseEnd(TokenStream &tokens, const std::string &originLine) const;
-    Statement *parseIndent(TokenStream &tokens, const std::string &originLine) const;
-    Statement *parseDedent(TokenStream &tokens, const std::string &originLine) const;
+    std::shared_ptr<Statement> parseStatement(TokenStream &tokens, const std::string &originLine) const;
+    std::shared_ptr<Statement> parseLet(TokenStream &tokens, const std::string &originLine) const;
+    std::shared_ptr<Statement> parsePrint(TokenStream &tokens, const std::string &originLine) const;
+    std::shared_ptr<Statement> parseInput(TokenStream &tokens, const std::string &originLine) const;
+    std::shared_ptr<Statement> parseGoto(TokenStream &tokens, const std::string &originLine) const;
+    std::shared_ptr<Statement> parseIf(TokenStream &tokens, const std::string &originLine) const;
+    std::shared_ptr<Statement> parseRem(TokenStream &tokens, const std::string &originLine) const;
+    std::shared_ptr<Statement> parseEnd(TokenStream &tokens, const std::string &originLine) const;
+    std::shared_ptr<Statement> parseIndent(TokenStream &tokens, const std::string &originLine) const;
+    std::shared_ptr<Statement> parseDedent(TokenStream &tokens, const std::string &originLine) const;
 
-    Expression *parseExpression(TokenStream &tokens) const;
-    Expression *parseExpression(TokenStream &tokens, int precedence) const;
+    std::shared_ptr<Expression> parseExpression(TokenStream &tokens) const;
+    std::shared_ptr<Expression> parseExpression(TokenStream &tokens, int precedence) const;
 
-    int getPrecedence(TokenType op) const; //返回运算符优先级
-    int parseLiteral(const Token *token) const;
+    int getPrecedence(TokenType op) const; // 返回运算符优先级
+    int parseLiteral(const std::shared_ptr<Token>) const;
 
-    mutable int leftParentCount{0};//括号层数
+    mutable int leftParentCount{0}; // 括号层数
 };

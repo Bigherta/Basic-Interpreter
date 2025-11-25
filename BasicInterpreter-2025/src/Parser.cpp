@@ -1,29 +1,26 @@
 #include "../include/Parser.hpp"
 
-#include <sstream>
+#include <memory>
 #include <stdexcept>
 #include <string>
-#include <vector>
-
 #include "../include/Expression.hpp"
 #include "../include/Statement.hpp"
 #include "../include/utils/Error.hpp"
 
 ParsedLine::ParsedLine() { statement_ = nullptr; } // 默认构造函数
 
-ParsedLine::~ParsedLine() { delete statement_; } // 析构函数
 
 void ParsedLine::setLine(int line) { line_number_.emplace(line); } // 将line作为当前行
 
 std::optional<int> ParsedLine::getLine() { return line_number_; } // 获取当前行号
 
-void ParsedLine::setStatement(Statement *stmt) { statement_ = stmt; } // 将stmt作为当前statement
+void ParsedLine::setStatement(std::shared_ptr<Statement> stmt) { statement_ = stmt; } // 将stmt作为当前statement
 
-Statement *ParsedLine::getStatement() const { return statement_; } // 获取当前statement的指针
+std::shared_ptr<Statement> ParsedLine::getStatement() const { return statement_; } // 获取当前statement的指针
 
-Statement *ParsedLine::fetchStatement()
+std::shared_ptr<Statement> ParsedLine::fetchStatement()
 {
-    Statement *temp = statement_;
+    std::shared_ptr<Statement> temp = statement_;
     statement_ = nullptr;
     return temp;
 } // 提取当前指针后将当前指针设置为空
@@ -33,7 +30,7 @@ ParsedLine Parser::parseLine(TokenStream &tokens, const std::string &originLine)
     ParsedLine result;
 
     // 检查是否有行号
-    const Token *firstToken = tokens.peek();
+    const std::shared_ptr<Token> firstToken = tokens.peek();
     if (firstToken && firstToken->type == TokenType::NUMBER)
     {
         // 解析行号
@@ -53,14 +50,14 @@ ParsedLine Parser::parseLine(TokenStream &tokens, const std::string &originLine)
     return result;
 }
 
-Statement *Parser::parseStatement(TokenStream &tokens, const std::string &originLine) const
+std::shared_ptr<Statement> Parser::parseStatement(TokenStream &tokens, const std::string &originLine) const
 {
     if (tokens.empty())
     {
         throw BasicError("SYNTAX ERROR");
     }
 
-    const Token *token = tokens.get();
+    const std::shared_ptr<Token> token = tokens.get();
     if (!token)
     {
         throw BasicError("SYNTAX ERROR");
@@ -91,14 +88,14 @@ Statement *Parser::parseStatement(TokenStream &tokens, const std::string &origin
     }
 }
 
-Statement *Parser::parseLet(TokenStream &tokens, const std::string &originLine) const
+std::shared_ptr<Statement> Parser::parseLet(TokenStream &tokens, const std::string &originLine) const
 {
     if (tokens.empty())
     {
         throw BasicError("SYNTAX ERROR");
     }
 
-    const Token *varToken = tokens.get(); // 提取命名标志
+    const std::shared_ptr<Token> varToken = tokens.get(); // 提取命名标志
     if (!varToken || varToken->type != TokenType::IDENTIFIER)
     {
         throw BasicError("SYNTAX ERROR");
@@ -113,26 +110,26 @@ Statement *Parser::parseLet(TokenStream &tokens, const std::string &originLine) 
 
     auto expr = parseExpression(tokens);
 
-    LetStatement *temp = new LetStatement(originLine, expr);
+    std::shared_ptr<LetStatement> temp = std::make_shared<LetStatement>(LetStatement(originLine, expr));
     return temp;
 } // finished
 
-Statement *Parser::parsePrint(TokenStream &tokens, const std::string &originLine) const
+std::shared_ptr<Statement> Parser::parsePrint(TokenStream &tokens, const std::string &originLine) const
 {
     auto expr = parseExpression(tokens); // 解析表达式
 
-    PrintStatement *temp = new PrintStatement(originLine, expr);
+    std::shared_ptr<PrintStatement> temp = std::make_shared<PrintStatement>(PrintStatement(originLine, expr));
     return temp;
 } // finished
 
-Statement *Parser::parseInput(TokenStream &tokens, const std::string &originLine) const
+std::shared_ptr<Statement> Parser::parseInput(TokenStream &tokens, const std::string &originLine) const
 {
     if (tokens.empty())
     {
         throw BasicError("SYNTAX ERROR");
     }
 
-    const Token *varToken = tokens.get();
+    const std::shared_ptr<Token> varToken = tokens.get();
     if (!varToken || varToken->type != TokenType::IDENTIFIER)
     {
         throw BasicError("SYNTAX ERROR");
@@ -140,18 +137,18 @@ Statement *Parser::parseInput(TokenStream &tokens, const std::string &originLine
 
     std::string varName = varToken->text;
 
-    InputStatement *temp = new InputStatement(originLine, varName);
+    std::shared_ptr<InputStatement> temp = std::make_shared<InputStatement>(InputStatement(originLine, varName));
     return temp;
 } // finished
 
-Statement *Parser::parseGoto(TokenStream &tokens, const std::string &originLine) const
+std::shared_ptr<Statement> Parser::parseGoto(TokenStream &tokens, const std::string &originLine) const
 {
     if (tokens.empty())
     {
         throw BasicError("SYNTAX ERROR");
     }
 
-    const Token *lineToken = tokens.get();
+    const std::shared_ptr<Token> lineToken = tokens.get();
     if (!lineToken || lineToken->type != TokenType::NUMBER)
     {
         throw BasicError("SYNTAX ERROR");
@@ -159,11 +156,12 @@ Statement *Parser::parseGoto(TokenStream &tokens, const std::string &originLine)
 
     int targetLine = parseLiteral(lineToken);
 
-    GOTOstatement *temp = new GOTOstatement(originLine, targetLine);
+    std::shared_ptr<GOTOstatement> temp = std::make_shared<GOTOstatement>(GOTOstatement(originLine, targetLine));
+
     return temp;
 } // finished
 
-Statement *Parser::parseIf(TokenStream &tokens, const std::string &originLine) const
+std::shared_ptr<Statement> Parser::parseIf(TokenStream &tokens, const std::string &originLine) const
 {
     // 解析左表达式
     auto leftExpr = parseExpression(tokens);
@@ -174,7 +172,7 @@ Statement *Parser::parseIf(TokenStream &tokens, const std::string &originLine) c
     }
 
     // 解析比较操作符
-    const Token *opToken = tokens.get();
+    const std::shared_ptr<Token> opToken = tokens.get();
     char op;
     switch (opToken->type)
     {
@@ -206,7 +204,7 @@ Statement *Parser::parseIf(TokenStream &tokens, const std::string &originLine) c
         throw BasicError("SYNTAX ERROR");
     }
 
-    const Token *lineToken = tokens.get();
+    const std::shared_ptr<Token> lineToken = tokens.get();
     if (!lineToken || lineToken->type != TokenType::NUMBER)
     {
         throw BasicError("SYNTAX ERROR");
@@ -215,56 +213,57 @@ Statement *Parser::parseIf(TokenStream &tokens, const std::string &originLine) c
     int targetLine = parseLiteral(lineToken); // GOTO的目标行
 
 
-    IfStatement *temp = new IfStatement(originLine, targetLine, leftExpr, rightExpr, op);
+    std::shared_ptr<IfStatement> temp =
+            std::make_shared<IfStatement>(IfStatement(originLine, targetLine, leftExpr, rightExpr, op));
     return temp;
 }
 
-Statement *Parser::parseRem(TokenStream &tokens, const std::string &originLine) const
+std::shared_ptr<Statement> Parser::parseRem(TokenStream &tokens, const std::string &originLine) const
 {
-    const Token *remInfo = tokens.get();
+    const std::shared_ptr<Token> remInfo = tokens.get();
     if (!remInfo || remInfo->type != TokenType::REMINFO)
     {
         throw BasicError("SYNTAX ERROR");
     }
 
-    RemStatement *temp = new RemStatement(originLine);
+    std::shared_ptr<RemStatement> temp = std::make_shared<RemStatement>(RemStatement(originLine));
     return temp;
 }
 
-Statement *Parser::parseEnd(TokenStream &tokens, const std::string &originLine) const
+std::shared_ptr<Statement> Parser::parseEnd(TokenStream &tokens, const std::string &originLine) const
 {
 
-    EndStatement *temp = new EndStatement(originLine);
+    std::shared_ptr<EndStatement> temp = std::make_shared<EndStatement>(EndStatement(originLine));
     return temp;
 }
 
-Statement *Parser::parseIndent(TokenStream &tokens, const std::string &originLine) const
+std::shared_ptr<Statement> Parser::parseIndent(TokenStream &tokens, const std::string &originLine) const
 {
 
-    IndentStatement *temp = new IndentStatement(originLine);
+    std::shared_ptr<IndentStatement> temp = std::make_shared<IndentStatement>(IndentStatement(originLine));
     return temp;
 }
 
-Statement *Parser::parseDedent(TokenStream &tokens, const std::string &originLine) const
+std::shared_ptr<Statement> Parser::parseDedent(TokenStream &tokens, const std::string &originLine) const
 {
 
-    DedentStatement *temp = new DedentStatement(originLine);
+    std::shared_ptr<DedentStatement> temp = std::make_shared<DedentStatement>(DedentStatement(originLine));
     return temp;
 }
 
-Expression *Parser::parseExpression(TokenStream &tokens) const { return parseExpression(tokens, 0); }
+std::shared_ptr<Expression> Parser::parseExpression(TokenStream &tokens) const { return parseExpression(tokens, 0); }
 
-Expression *Parser::parseExpression(TokenStream &tokens, int precedence) const
+std::shared_ptr<Expression> Parser::parseExpression(TokenStream &tokens, int precedence) const
 {
     // 解析左操作数
-    Expression *left;
+    std::shared_ptr<Expression> left;
 
     if (tokens.empty())
     {
         throw BasicError("SYNTAX ERROR");
     } // 检查是否为空
 
-    const Token *token = tokens.get();
+    const std::shared_ptr<Token> token = tokens.get();
     if (!token)
     {
         throw BasicError("SYNTAX ERROR");
@@ -273,11 +272,11 @@ Expression *Parser::parseExpression(TokenStream &tokens, int precedence) const
     if (token->type == TokenType::NUMBER)
     {
         int value = parseLiteral(token);
-        left = new ConstExpression(value);
+        left = std::make_shared<ConstExpression>(ConstExpression(value));
     } // 将左操作数赋值为常量
     else if (token->type == TokenType::IDENTIFIER)
     {
-        left = new VariableExpression(token->text);
+        left = std::make_shared<VariableExpression>(VariableExpression(token->text));
     } // 将左操作数作为变量表达式并命名为token->text
     else if (token->type == TokenType::LEFT_PAREN)
     {
@@ -298,7 +297,7 @@ Expression *Parser::parseExpression(TokenStream &tokens, int precedence) const
     // 检查是否有运算符
     while (!tokens.empty())
     {
-        const Token *opToken = tokens.peek();
+        const std::shared_ptr<Token> opToken = tokens.peek();
         if (!opToken)
         {
             break;
@@ -344,7 +343,7 @@ Expression *Parser::parseExpression(TokenStream &tokens, int precedence) const
 
         // 解析右操作数，使用更高的优先级
         auto right = parseExpression(tokens, opPrecedence + 1);
-        left = new CompoundExpression(left, op, right);
+        left = std::make_shared<CompoundExpression>(CompoundExpression(left, op, right));
     }
 
     return left;
@@ -365,7 +364,7 @@ int Parser::getPrecedence(TokenType op) const
     }
 }
 
-int Parser::parseLiteral(const Token *token) const
+int Parser::parseLiteral(const std::shared_ptr<Token> token) const
 {
     if (!token || token->type != TokenType::NUMBER)
     {

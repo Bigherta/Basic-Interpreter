@@ -1,7 +1,5 @@
 #include "../include/Statement.hpp"
 #include <iostream>
-#include <limits>
-#include <sstream>
 #include <string>
 #include <utility>
 #include "../include/Lexer.hpp"
@@ -25,14 +23,20 @@ void GOTOstatement::execute(std::vector<VarState> &state, Program &program) cons
     }
 }
 
-PrintStatement::PrintStatement(std::string source, Expression *expression) : Statement(source) { exp = expression; }
+PrintStatement::PrintStatement(std::string source, std::shared_ptr<Expression> expression) : Statement(source)
+{
+    exp = expression;
+}
 
 void PrintStatement::execute(std::vector<VarState> &state, Program &program) const
 {
     std::cout << exp->evaluate(state) << '\n';
 }
 
-LetStatement::LetStatement(std::string source, Expression *expression) : Statement(source) { exp = expression; }
+LetStatement::LetStatement(std::string source, std::shared_ptr<Expression> expression) : Statement(source)
+{
+    exp = expression;
+}
 
 void LetStatement::execute(std::vector<VarState> &state, Program &program) const
 {
@@ -103,8 +107,8 @@ void EndStatement::execute(std::vector<VarState> &state, Program &program) const
     program.programEnd();
 }
 
-IfStatement::IfStatement(std::string source, int targetline, Expression *l, Expression *r, char o) :
-    GOTOstatement(source, targetline)
+IfStatement::IfStatement(std::string source, int targetline, std::shared_ptr<Expression> l,
+                         std::shared_ptr<Expression> r, char o) : GOTOstatement(source, targetline)
 {
     left = l;
     right = r;
@@ -123,10 +127,7 @@ void IfStatement::execute(std::vector<VarState> &state, Program &program) const
 
 IndentStatement::IndentStatement(std::string source) : Statement(source) { return; }
 
-void IndentStatement::execute(std::vector<VarState> &state, Program &program) const
-{
-    state.push_back(VarState());
-}
+void IndentStatement::execute(std::vector<VarState> &state, Program &program) const { state.push_back(VarState()); }
 
 DedentStatement::DedentStatement(std::string source) : Statement(source) { return; }
 

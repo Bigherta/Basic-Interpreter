@@ -9,7 +9,6 @@ class VarState;
 class Expression
 {
 public:
-    virtual ~Expression() = default;
     virtual int evaluate(const std::vector<VarState> &state) const = 0; // 返回值的纯虚函数
 };
 
@@ -17,7 +16,7 @@ class ConstExpression : public Expression
 {
 public:
     explicit ConstExpression(int value);
-    ~ConstExpression() = default;
+
     int evaluate(const std::vector<VarState> &state) const override;
 
 private:
@@ -28,7 +27,7 @@ class VariableExpression : public Expression
 {
 public:
     explicit VariableExpression(std::string name);
-    ~VariableExpression() = default;
+
     int evaluate(const std::vector<VarState> &state) const override;
 
 private:
@@ -38,12 +37,12 @@ private:
 class CompoundExpression : public Expression
 {
 public:
-    CompoundExpression(Expression *left, char op, Expression *right);
-    ~CompoundExpression();
+    CompoundExpression(std::shared_ptr<Expression> left, char op, std::shared_ptr<Expression> right);
+
     int evaluate(const std::vector<VarState> &state) const override;
 
 private:
-    Expression *left_;
-    Expression *right_;
+    std::shared_ptr<Expression> left_;
+    std::shared_ptr<Expression> right_;
     char op_;
 };

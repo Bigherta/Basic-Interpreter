@@ -54,13 +54,12 @@ int main()
                     ParsedLine Aline = parser.parseLine(tokens_of_line, line);
                     if (Aline.getLine().has_value())
                     {
-                        Statement *stmt = Aline.fetchStatement();
+                        std::shared_ptr<Statement> stmt = Aline.fetchStatement();
                         program.addStmt(Aline.getLine().value(), stmt);
                     }
                     else
                     {
                         Aline.getStatement()->execute(program.get_vars(), program);
-                        delete Aline.fetchStatement();
                     }
                     break;
             }

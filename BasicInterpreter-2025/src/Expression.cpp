@@ -1,4 +1,5 @@
 #include "../include/Expression.hpp"
+#include <memory>
 
 #include "../include/VarState.hpp"
 #include "../include/utils/Error.hpp"
@@ -21,16 +22,11 @@ int VariableExpression::evaluate(const std::vector<VarState> &state) const
     throw BasicError("VARIABLE NOT DEFINED");
 }
 
-CompoundExpression::CompoundExpression(Expression *left, char op, Expression *right) :
+CompoundExpression::CompoundExpression(std::shared_ptr<Expression> left, char op, std::shared_ptr<Expression> right) :
     left_(left), right_(right), op_(op)
 {
+    return;
 } // 复合表达式的构造函数
-
-CompoundExpression::~CompoundExpression()
-{
-    delete left_;
-    delete right_;
-} // 复合表达式的析构
 
 int CompoundExpression::evaluate(const std::vector<VarState> &state) const
 {
