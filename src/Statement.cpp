@@ -15,7 +15,7 @@ const std::string &Statement::text() const noexcept { return source_; }
 
 GOTOstatement::GOTOstatement(std::string source, int targetline) : Statement(source) { gotoPC = targetline; }
 
-void GOTOstatement::execute(VarState &state, Program &program) const
+void GOTOstatement::execute(std::vector<VarState> &state, Program &program) const
 {
     if (program.hasline(gotoPC))
         program.changePC(gotoPC);
@@ -27,11 +27,14 @@ void GOTOstatement::execute(VarState &state, Program &program) const
 
 PrintStatement::PrintStatement(std::string source, Expression *expression) : Statement(source) { exp = expression; }
 
-void PrintStatement::execute(VarState &state, Program &program) const { std::cout << exp->evaluate(state) << '\n'; }
+void PrintStatement::execute(std::vector<VarState> &state, Program &program) const
+{
+    std::cout << exp->evaluate(state) << '\n';
+}
 
 LetStatement::LetStatement(std::string source, Expression *expression) : Statement(source) { exp = expression; }
 
-void LetStatement::execute(VarState &state, Program &program) const
+void LetStatement::execute(std::vector<VarState> &state, Program &program) const
 {
     Lexer temp;
     TokenStream tokens = temp.tokenize(source_);
@@ -44,7 +47,7 @@ void LetStatement::execute(VarState &state, Program &program) const
             TokenType thirdtoken = tokens.peek()->type;
             if (thirdtoken == TokenType::IDENTIFIER)
             {
-                state.setValue(tokens.get()->text, exp->evaluate(state));
+                state.back().setValue(tokens.get()->text, exp->evaluate(state));
             }
         }
     }
@@ -53,14 +56,14 @@ void LetStatement::execute(VarState &state, Program &program) const
         TokenType secondtoken = tokens.peek()->type;
         if (secondtoken == TokenType::IDENTIFIER)
         {
-            state.setValue(tokens.get()->text, exp->evaluate(state));
+            state.back().setValue(tokens.get()->text, exp->evaluate(state));
         }
     }
 }
 
 InputStatement::InputStatement(std::string source, std::string name) : Statement(source) { var_name = name; }
 
-void InputStatement::execute(VarState &state, Program &program) const
+void InputStatement::execute(std::vector<VarState> &state, Program &program) const
 {
     std::string x;
     while (std::getline(std::cin, x))
@@ -69,8 +72,9 @@ void InputStatement::execute(VarState &state, Program &program) const
         bool Isnumber = true;
         for (int i = 0; i < x.size(); i++)
         {
-            if (i == 0 && x[i] == '-') continue;
-            if (x[i] < '0' || x[i] > '9' )
+            if (i == 0 && x[i] == '-')
+                continue;
+            if (x[i] < '0' || x[i] > '9')
             {
                 Isnumber = false;
                 std::cout << "INVALID NUMBER\n";
@@ -80,7 +84,7 @@ void InputStatement::execute(VarState &state, Program &program) const
         if (Isnumber)
         {
             int value = std::stoi(x);
-            state.setValue(var_name, value);
+            state.back().setValue(var_name, value);
             break;
         }
     }
@@ -88,13 +92,14 @@ void InputStatement::execute(VarState &state, Program &program) const
 
 RemStatement::RemStatement(std::string source) : Statement(source) { return; }
 
-void RemStatement::execute(VarState &state, Program &program) const { return; }
+void RemStatement::execute(std::vector<VarState> &state, Program &program) const { return; }
 
 EndStatement::EndStatement(std::string source) : Statement(source) { return; }
 
-void EndStatement::execute(VarState &state, Program &program) const
+void EndStatement::execute(std::vector<VarState> &state, Program &program) const
 {
     state.clear();
+    state.push_back(VarState());
     program.programEnd();
 }
 
@@ -106,7 +111,7 @@ IfStatement::IfStatement(std::string source, int targetline, Expression *l, Expr
     op = o;
 }
 
-void IfStatement::execute(VarState &state, Program &program) const
+void IfStatement::execute(std::vector<VarState> &state, Program &program) const
 {
     int val_l = left->evaluate(state);
     int val_r = right->evaluate(state);
@@ -114,4 +119,21 @@ void IfStatement::execute(VarState &state, Program &program) const
     {
         GOTOstatement::execute(state, program);
     }
+}
+
+IndentStatement::IndentStatement(std::string source) : Statement(source) { return; }
+
+void IndentStatement::execute(std::vector<VarState> &state, Program &program) const
+{
+    state.push_back(VarState());
+}
+
+DedentStatement::DedentStatement(std::string source) : Statement(source) { return; }
+
+void DedentStatement::execute(std::vector<VarState> &state, Program &program) const
+{
+    if (state.size() == 1)
+        throw BasicError("SCOPE UNDERFLOW");
+    else
+        state.pop_back();
 }

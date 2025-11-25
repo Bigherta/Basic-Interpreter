@@ -1,7 +1,8 @@
 // TODO: Imply interfaces declared in the Program.hpp.
 #include "../include/Program.hpp"
-#include <iostream>
-Program::Program() : vars_(), recorder_(), programCounter_(1), programEnd_(false) { return; }
+#include <vector>
+#include "../include/utils/Error.hpp"
+Program::Program() : recorder_(), programCounter_(1), programEnd_(false) { vars_.push_back(VarState()); }
 
 void Program::addStmt(int line, Statement *stmt) { recorder_.add(line, stmt); }
 
@@ -9,14 +10,15 @@ void Program::removeStmt(int line) { recorder_.remove(line); }
 
 void Program::run()
 {
-    
+
     programCounter_ = recorder_.nextLine(0);
     while (programCounter_ != -1)
     {
         int pre_programcounter = programCounter_;
         const Statement *executable = recorder_.get(programCounter_);
         executable->execute(vars_, *this);
-        if (programEnd_) break;
+        if (programEnd_)
+            break;
         if (pre_programcounter == programCounter_)
             programCounter_ = recorder_.nextLine(programCounter_);
     }
@@ -30,6 +32,7 @@ void Program::clear()
 {
     recorder_.clear();
     vars_.clear();
+    vars_.push_back(VarState());
 }
 
 void Program::execute(Statement *stmt) { stmt->execute(vars_, (*this)); }
@@ -40,7 +43,7 @@ void Program::changePC(int line) { programCounter_ = line; }
 
 void Program::programEnd() { programEnd_ = true; }
 
-VarState &Program::get_vars() { return vars_; }
+std::vector<VarState> &Program::get_vars() { return vars_; }
 
 bool Program::hasline(int line) { return recorder_.hasLine(line); }
 

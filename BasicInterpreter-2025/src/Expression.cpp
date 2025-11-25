@@ -18,7 +18,7 @@ int VariableExpression::evaluate(const std::vector<VarState> &state) const
             return state[i].getValue(name_);
         }
     }
-    throw BasicError("UNDEFINED VARIABLE");
+    throw BasicError("VARIABLE NOT DEFINED");
 }
 
 CompoundExpression::CompoundExpression(Expression *left, char op, Expression *right) :
